@@ -5,13 +5,27 @@ import { shortAdd } from "../../utils";
 import search from "../../Assets/search.svg";
 import logoSearch from "../../Assets/searchLogo.svg";
 import logo from "../../Assets/Logo.svg";
+import { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { AppContext } from "../../context/appContext";
+import { isAddress } from "ethers/lib/utils.js";
 
 const Header = () => {
   const { open } = useWeb3Modal();
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
-
+  const [isRegisted, setisRegisted] = useState(false);
+  const [searchContract, setSearchContract] = useState("");
   const { address, isConnected } = useAccount();
+
+  const {
+    setVolume,
+    setPredictions,
+    setRenounced,
+    setmint,
+    sethoneypot,
+    setverified,
+  } = useContext(AppContext);
 
   const connectWallet = () => {
     if (chain?.id !== 1) {
@@ -25,6 +39,62 @@ const Header = () => {
       console.log(error);
     }
   };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://54.204.176.35:3000/is_registered?wallet_address=${address}`
+      );
+
+      setisRegisted(response.data.is_registered);
+      console.log("resp 1", response.data.is_registered);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchContractData = async () => {
+    console.log(searchContract);
+
+    if (!isAddress(searchContract)) {
+      alert("Invalid Contract");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `http://54.204.176.35:3000/get_info?contract_address=${searchContract.toLocaleLowerCase()}`
+      );
+
+      const pricePred = await axios.get(
+        `http://54.204.176.35:3000/get_prediction?contract_address=${searchContract.toLocaleLowerCase()}`
+      );
+
+      console.log("Data 1:", pricePred.data);
+      console.log("Data 2:", pricePred.data.volume_24h);
+      console.log("Data 3:", response.data);
+
+      setRenounced(response.data.is_contract_renounced);
+      setmint(response.data.no_mint_function);
+      sethoneypot(response.data.not_a_honeypot);
+      setverified(response.data.source_code_verified);
+
+      setPredictions(pricePred.data.predictions);
+
+      setVolume(pricePred.data.volume_24h);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const setContractInput = (e) => {
+    setSearchContract(e.target.value);
+  };
+
+  useEffect(() => {
+    if (!isConnected) return;
+    fetchData();
+  }, [isConnected]);
 
   return (
     <header className="w-full flex justify-center">
@@ -47,11 +117,22 @@ const Header = () => {
             className=""
           />
           <input
+            value={searchContract}
             type="text"
             className="w-full placeholder:text-[#8F8E86] bg-transparent text-white outline-none"
-            placeholder="(Paste Smart Contract)"
+            onChange={setContractInput}
+            placeholder={
+              isConnected
+                ? isRegisted
+                  ? "(Paste Smart Contract)"
+                  : "Register to Search Contract"
+                : "Connect To Search"
+            }
           />
-          <button className="h-[31px] w-[31px]">
+          <button
+            onClick={fetchContractData}
+            className="h-[31px] w-[31px]"
+          >
             <img
               src={search}
               alt=""
@@ -106,7 +187,7 @@ const Header = () => {
             <input
               type="text"
               className="w-full placeholder:text-[#8F8E86] bg-transparent text-white outline-none"
-              placeholder="(Paste Smart Contract)"
+              placeholder={true ? "wad" : "Connect To Search"}
             />
           </div>
         </div>

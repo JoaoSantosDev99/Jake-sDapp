@@ -1,9 +1,15 @@
 import vol from "../Assets/volume.svg";
-import age from "../Assets/age.svg";
 import correct from "../Assets/Correct.svg";
 import PieChart from "../components/PieChart";
+import error from "../Assets/close.png";
+import { useContext } from "react";
+import { AppContext } from "../context/appContext";
+import empty from "../Assets/question.png";
 
 const Analysis = () => {
+  const { volume, renounced, mint, honeypot, verified } =
+    useContext(AppContext);
+
   return (
     <section className="w-full px-[5px] flex justify-center items-center sm:mt-[130px] mt-[50px]">
       <div className="max-w-screen-2xl flex flex-col justify-center items-center w-full">
@@ -18,9 +24,9 @@ const Analysis = () => {
 
         <div className="flex flex-wrap w-full gap-[80px] justify-center xl:justify-start items-center">
           {/* Left Side */}
-          <div className="max-w-[661px] w-full flex flex-wrap justify-center items-center gap-[20px]">
+          <div className="max-w-[621px] w-full flex flex-wrap justify-center items-center gap-[20px]">
             {/* Card */}
-            <div className="max-w-[400px] w-full px-[44px] py-[27px] h-[226px] bg-[#f2f2f20d] rounded-[16px]">
+            <div className="max-w-[360px] w-full px-[44px] py-[27px] h-[226px] bg-[#f2f2f20d] rounded-[16px]">
               <h3 className="sm:text-[24px] text-[20px] text-white font-[700] mb-[23px]">
                 Pair Info
               </h3>
@@ -37,9 +43,20 @@ const Analysis = () => {
                   <span className="text-[#8E8E8E] font-normal sm:leading-[27px] text-[16px] sm:text-[18px]">
                     Renounced:
                   </span>
-                  <span className="text-[#6BF64F] font-[700] sm:leading-[27px] text-[16px] ms:text-[18px]">
-                    Contract Renounced{" "}
-                  </span>
+
+                  {renounced === "" ? (
+                    <span className="text-[#adadad] font-[700] sm:leading-[27px] text-[16px] ms:text-[18px]">
+                      Info. N.A
+                    </span>
+                  ) : renounced ? (
+                    <span className="text-[#6BF64F] font-[700] sm:leading-[27px] text-[16px] ms:text-[18px]">
+                      Contract Renounced{" "}
+                    </span>
+                  ) : (
+                    <span className="text-[#f64f57] font-[700] sm:leading-[27px] text-[16px] ms:text-[18px]">
+                      Contract Not Ren.{" "}
+                    </span>
+                  )}
                 </p>
                 <p className="flex gap-5">
                   <span className="text-[#8E8E8E] font-normal sm:leading-[27px] text-[16px] sm:text-[18px]">
@@ -71,10 +88,10 @@ const Analysis = () => {
                   {/* text */}
                   <div className="flex flex-col text-white">
                     <span className="font-[500] text-[14px] leading-[21px]">
-                      24 hour volume
+                      24 hour volume (USD)
                     </span>
                     <span className="font-[700] text-[24px] leading-[30px]">
-                      %516,818 USD
+                      {volume === "" ? "N.A" : volume}
                     </span>
                   </div>
                 </div>
@@ -109,7 +126,7 @@ const Analysis = () => {
           </div>
 
           {/* Right Side */}
-          <div className="flex max-w-[645px] w-full flex-wrap justify-center items-center gap-[30px]">
+          <div className="flex max-w-[595px] w-full flex-wrap justify-center items-center gap-[30px]">
             {/* Chart */}
             <div className="relative flex justify-center items-center w-[223px]">
               <PieChart percentage={75} />
@@ -118,14 +135,15 @@ const Analysis = () => {
               </div>
             </div>
             {/* Check Boxes */}
-            <div className="flex max-w-[386px] w-full flex-col relative">
+            <div className="flex max-w-[336px] w-full flex-col relative">
               <div className="w-full h-[227px] gap-[26px] justify-center flex flex-col items-center bg-[#f2f2f20d] rounded-[16px]">
                 {/* Honeypot */}
                 <span className="font-[600] text-[18px] max-w-[250px] w-full justify-between text-white flex gap-2">
                   Not a HoneySpot
                   <img
-                    src={correct}
+                    src={honeypot === "" ? empty : honeypot ? correct : error}
                     alt=""
+                    className="h-[35px] w-[35px]"
                   />
                 </span>
 
@@ -133,8 +151,9 @@ const Analysis = () => {
                 <span className="font-[600] text-[18px] max-w-[250px] w-full justify-between text-white flex gap-2">
                   Source code verified
                   <img
-                    src={correct}
+                    src={verified === "" ? empty : verified ? correct : error}
                     alt=""
+                    className="h-[35px] w-[35px]"
                   />
                 </span>
 
@@ -142,8 +161,9 @@ const Analysis = () => {
                 <span className="font-[600] text-[18px] max-w-[250px] w-full justify-between text-white flex gap-2">
                   No mint function
                   <img
-                    src={correct}
+                    src={mint === "" ? empty : mint ? error : correct}
                     alt=""
+                    className="h-[35px] w-[35px]"
                   />
                 </span>
               </div>
