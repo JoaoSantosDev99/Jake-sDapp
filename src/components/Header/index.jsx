@@ -9,6 +9,8 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AppContext } from "../../context/appContext";
 import { isAddress } from "ethers/lib/utils.js";
+import abi from "../../contracts/abi.json";
+import { ethers } from "ethers";
 
 const Header = () => {
   const { open } = useWeb3Modal();
@@ -25,6 +27,11 @@ const Header = () => {
     setmint,
     sethoneypot,
     setverified,
+    setTokenScore,
+    setPairAge,
+    setTicker,
+    setBuyTax,
+    setsellTax,
   } = useContext(AppContext);
 
   const connectWallet = () => {
@@ -42,12 +49,17 @@ const Header = () => {
 
   const fetchData = async () => {
     try {
+      // const response = await axios.get(
+      //   `http://54.204.176.35:3000/is_registered?wallet_address=${address}`
+      // );
+
       const response = await axios.get(
         `http://54.204.176.35:3000/is_registered?wallet_address=${address}`
       );
 
+      // 0x903b670f89969740ADA5ccD78d8aDfFA474F7e28
       setisRegisted(response.data.is_registered);
-      console.log("resp 1", response.data.is_registered);
+      console.log("resp 1", response.data.is_registered, address);
     } catch (error) {
       console.log(error);
     }
@@ -61,18 +73,21 @@ const Header = () => {
       return;
     }
 
+    const statProv = new ethers.providers.JsonRpcProvider(
+      "https://rpc.ankr.com/eth"
+    );
+
+    const provContract = new ethers.Contract(searchContract, abi, statProv);
+
     try {
+      const ticker = await provContract.symbol();
       const response = await axios.get(
-        `http://54.204.176.35:3000/get_info?contract_address=${searchContract.toLocaleLowerCase()}`
+        `http://54.204.176.35:3000/get_info?contract_address=${searchContract}`
       );
 
       const pricePred = await axios.get(
-        `http://54.204.176.35:3000/get_prediction?contract_address=${searchContract.toLocaleLowerCase()}`
+        `http://54.204.176.35:3000/get_prediction?contract_address=${searchContract}`
       );
-
-      console.log("Data 1:", pricePred.data);
-      console.log("Data 2:", pricePred.data.volume_24h);
-      console.log("Data 3:", response.data);
 
       setRenounced(response.data.is_contract_renounced);
       setmint(response.data.no_mint_function);
@@ -81,7 +96,22 @@ const Header = () => {
 
       setPredictions(pricePred.data.predictions);
 
-      setVolume(pricePred.data.volume_24h);
+      setTokenScore(response.data.token_score);
+
+      const today = new Date();
+      const then = new Date(response.data.date_created);
+      const ageInDays = Math.abs(today - then) / 1000 / 60 / 60 / 24;
+
+      setPairAge(commafy(ageInDays.toFixed(0)));
+      setVolume(commafy(pricePred.data.volume_24h.toFixed(0)));
+
+      setTicker(ticker);
+
+      setBuyTax(response.data.buy_tax);
+      setsellTax(response.data.sell_tax);
+
+      console.log("test", pricePred.data.volume_24h);
+      console.log("resp", response.data, pricePred.data);
     } catch (error) {
       console.log(error);
     }
@@ -92,9 +122,21 @@ const Header = () => {
   };
 
   useEffect(() => {
-    if (!isConnected) return;
-    fetchData();
-  }, [isConnected]);
+    if (isConnected) {
+      fetchData();
+    }
+  }, [address, isConnected]);
+
+  function commafy(num) {
+    var str = num.toString().split(".");
+    if (str[0].length >= 3) {
+      str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, "$1,");
+    }
+    if (str[1] && str[1].length >= 5) {
+      str[1] = str[1].replace(/(\d{3})/g, "$1 ");
+    }
+    return str.join(".");
+  }
 
   return (
     <header className="w-full flex justify-center">
@@ -118,9 +160,9 @@ const Header = () => {
           />
           <input
             value={searchContract}
+            onChange={setContractInput}
             type="text"
             className="w-full placeholder:text-[#8F8E86] bg-transparent text-white outline-none"
-            onChange={setContractInput}
             placeholder={
               isConnected
                 ? isRegisted
@@ -178,16 +220,27 @@ const Header = () => {
             className="w-[119px]"
           />
           <div className="w-full h-[40px] gap-[10px] px-[20px] flex justify-between items-center rounded-[68px] bg-[#42424273]">
-            <button className="h-[31px] w-[31px]">
+            <button
+              onClick={fetchContractData}
+              className="h-[31px] w-[31px]"
+            >
               <img
                 src={search}
                 alt=""
               />
             </button>
             <input
+              value={searchContract}
+              onChange={setContractInput}
               type="text"
               className="w-full placeholder:text-[#8F8E86] bg-transparent text-white outline-none"
-              placeholder={true ? "wad" : "Connect To Search"}
+              placeholder={
+                isConnected
+                  ? isRegisted
+                    ? "(Paste Smart Contract)"
+                    : "Register to Search Contract"
+                  : "Connect To Search"
+              }
             />
           </div>
         </div>

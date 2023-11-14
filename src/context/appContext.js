@@ -11,9 +11,21 @@ const ContextProvider = ({ children }) => {
 
   const [predictions, setPredictions] = useState("");
   const [volume, setVolume] = useState("");
+
+  const [tokenScore, setTokenScore] = useState(-1);
+  const [pairAge, setPairAge] = useState(0);
+  const [ticker, setTicker] = useState("");
+
+  const [buyTax, setBuyTax] = useState("");
+  const [sellTax, setsellTax] = useState("");
+
   return (
     <AppContext.Provider
       value={{
+        tokenScore,
+        setTokenScore,
+        pairAge,
+        setPairAge,
         renounced,
         setRenounced,
         mint,
@@ -26,6 +38,12 @@ const ContextProvider = ({ children }) => {
         setPredictions,
         volume,
         setVolume,
+        ticker,
+        setTicker,
+        buyTax,
+        setBuyTax,
+        sellTax,
+        setsellTax,
       }}
     >
       {children}

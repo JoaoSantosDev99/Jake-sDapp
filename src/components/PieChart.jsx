@@ -1,11 +1,22 @@
 import { Chart } from "react-google-charts";
 
 const PieChart = ({ percentage }) => {
+  const val = percentage >= 0 ? percentage : 100;
+
   const data = [
     ["Pac Man", "Percentage"],
-    ["", percentage],
-    ["", 100 - percentage],
+    ["", val],
+    ["", 100 - val],
   ];
+
+  const color1 =
+    percentage >= 75
+      ? "#15c344"
+      : percentage >= 50
+      ? "#c3a615"
+      : percentage >= 0
+      ? "#c31515"
+      : "#adadad";
 
   const options = {
     legend: "none",
@@ -13,7 +24,7 @@ const PieChart = ({ percentage }) => {
     pieStartAngle: 0,
     tooltip: { trigger: "none" },
     slices: {
-      0: { color: "#15c344" },
+      0: { color: color1 },
       1: { color: "transparent" },
     },
 

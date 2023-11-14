@@ -128,7 +128,6 @@ const Signal = () => {
 
                     {/* Fith */}
                     <div className=" w-full text-end">
-                      {" "}
                       {predictions?.length !== 0 ? (
                         Number(predictions.day_4.prediction) >=
                         Number(predictions.day_5.prediction) ? (
@@ -179,23 +178,104 @@ const Signal = () => {
                     <span>5 day</span>
                   </div>
                   <div className="border"></div>
+
                   {/* Prices */}
                   <div className="flex flex-col font-[600] text-white gap-[44px] text-[20px]">
-                    <span className="text-[#40FD47] text-[20px] font-[600]">
-                      0.043
-                    </span>
-                    <span className="text-[#40FD47] text-[20px] font-[600]">
-                      0.043
-                    </span>
-                    <span className="text-[#40FD47] text-[20px] font-[600]">
-                      0.043
-                    </span>
-                    <span className="text-[#40FD47] text-[20px] font-[600]">
-                      0.043
-                    </span>
-                    <span className="text-[#40FD47] text-[20px] font-[600]">
-                      0.043
-                    </span>
+                    {/* First */}
+                    <div className="w-full text-end">
+                      {predictions?.length !== 0 ? (
+                        <span className="text-[#40FD47] text-[20px] font-[600]">
+                          {Number(predictions.day_1.prediction).toFixed(4)}
+                        </span>
+                      ) : (
+                        <span className="text-[#a4a4a4] text-[20px] font-[600]">
+                          N.A
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Second */}
+                    <div className=" w-full text-end">
+                      {" "}
+                      {predictions?.length !== 0 ? (
+                        Number(predictions.day_1.prediction) >=
+                        Number(predictions.day_2.prediction) ? (
+                          <span className="text-[#fd4d40] text-[20px] font-[600]">
+                            {Number(predictions.day_2.prediction).toFixed(4)}
+                          </span>
+                        ) : (
+                          <span className="text-[#40FD47] text-[20px] font-[600]">
+                            {Number(predictions.day_2.prediction).toFixed(4)}
+                          </span>
+                        )
+                      ) : (
+                        <span className="text-[#a4a4a4] text-[20px] font-[600]">
+                          N.A
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Third */}
+                    <div className=" w-full text-end">
+                      {" "}
+                      {predictions?.length !== 0 ? (
+                        Number(predictions.day_2.prediction) >=
+                        Number(predictions.day_3.prediction) ? (
+                          <span className="text-[#fd4d40] text-[20px] font-[600]">
+                            {Number(predictions.day_3.prediction).toFixed(4)}
+                          </span>
+                        ) : (
+                          <span className="text-[#40FD47] text-[20px] font-[600]">
+                            {Number(predictions.day_3.prediction).toFixed(4)}
+                          </span>
+                        )
+                      ) : (
+                        <span className="text-[#a4a4a4] text-[20px] font-[600]">
+                          N.A
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Fourth */}
+                    <div className=" w-full text-end">
+                      {" "}
+                      {predictions?.length !== 0 ? (
+                        Number(predictions.day_3.prediction) >=
+                        Number(predictions.day_4.prediction) ? (
+                          <span className="text-[#fd4d40] text-[20px] font-[600]">
+                            {Number(predictions.day_4.prediction).toFixed(4)}
+                          </span>
+                        ) : (
+                          <span className="text-[#40FD47] text-[20px] font-[600]">
+                            {Number(predictions.day_4.prediction).toFixed(4)}
+                          </span>
+                        )
+                      ) : (
+                        <span className="text-[#a4a4a4] text-[20px] font-[600]">
+                          N.A
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Fith */}
+                    <div className=" w-full text-end">
+                      {predictions?.length !== 0 ? (
+                        Number(predictions.day_4.prediction) >=
+                        Number(predictions.day_5.prediction) ? (
+                          <span className="text-[#fd4d40] text-[20px] font-[600]">
+                            {Number(predictions.day_5.prediction).toFixed(4)}
+                          </span>
+                        ) : (
+                          <span className="text-[#40FD47] text-[20px] font-[600]">
+                            {Number(predictions.day_5.prediction).toFixed(4)}
+                          </span>
+                        )
+                      ) : (
+                        <span className="text-[#a4a4a4] text-[20px] font-[600]">
+                          N.A
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

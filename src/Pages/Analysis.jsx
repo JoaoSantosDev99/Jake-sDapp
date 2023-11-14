@@ -7,8 +7,18 @@ import { AppContext } from "../context/appContext";
 import empty from "../Assets/question.png";
 
 const Analysis = () => {
-  const { volume, renounced, mint, honeypot, verified } =
-    useContext(AppContext);
+  const {
+    volume,
+    renounced,
+    mint,
+    honeypot,
+    verified,
+    tokenScore,
+    pairAge,
+    ticker,
+    buyTax,
+    sellTax,
+  } = useContext(AppContext);
 
   return (
     <section className="w-full px-[5px] flex justify-center items-center sm:mt-[130px] mt-[50px]">
@@ -26,19 +36,11 @@ const Analysis = () => {
           {/* Left Side */}
           <div className="max-w-[621px] w-full flex flex-wrap justify-center items-center gap-[20px]">
             {/* Card */}
-            <div className="max-w-[360px] w-full px-[44px] py-[27px] h-[226px] bg-[#f2f2f20d] rounded-[16px]">
+            <div className="max-w-[360px] w-full px-[44px] py-[27px] max-h-[226px] bg-[#f2f2f20d] rounded-[16px]">
               <h3 className="sm:text-[24px] text-[20px] text-white font-[700] mb-[23px]">
                 Pair Info
               </h3>
               <div className="flex flex-col gap-[12px]">
-                <p className="flex gap-5">
-                  <span className="text-[#8E8E8E] font-normal sm:leading-[27px] text-[16px] sm:text-[18px]">
-                    Liquidity:
-                  </span>
-                  <span className="text-[#6BF64F] font-[700] sm:leading-[27px] text-[16px] ms:text-[18px]">
-                    Locked
-                  </span>
-                </p>
                 <p className="flex gap-5">
                   <span className="text-[#8E8E8E] font-normal sm:leading-[27px] text-[16px] sm:text-[18px]">
                     Renounced:
@@ -60,10 +62,27 @@ const Analysis = () => {
                 </p>
                 <p className="flex gap-5">
                   <span className="text-[#8E8E8E] font-normal sm:leading-[27px] text-[16px] sm:text-[18px]">
-                    Taxes:
+                    Buy Taxes:
                   </span>
                   <span className="text-[#DEC909] font-[700] sm:leading-[27px] text-[16px] ms:text-[18px]">
-                    5% Buy - 5% Sell
+                    <img
+                      src={buyTax === "" ? empty : honeypot ? correct : error}
+                      alt=""
+                      className="h-[25px] w-[25px]"
+                    />
+                  </span>
+                </p>
+
+                <p className="flex gap-5">
+                  <span className="text-[#8E8E8E] font-normal sm:leading-[27px] text-[16px] sm:text-[18px]">
+                    Sell Taxes:
+                  </span>
+                  <span className="text-[#DEC909] font-[700] sm:leading-[27px] text-[16px] ms:text-[18px]">
+                    <img
+                      src={sellTax === "" ? empty : honeypot ? correct : error}
+                      alt=""
+                      className="h-[25px] w-[25px]"
+                    />
                   </span>
                 </p>
               </div>
@@ -114,10 +133,10 @@ const Analysis = () => {
                   {/* text */}
                   <div className="flex flex-col text-white">
                     <span className="font-[500] text-[14px] leading-[21px]">
-                      ald/weth
+                      {ticker === "" ? "N.A" : ticker}/weth
                     </span>
                     <span className="font-[700] text-[24px] leading-[30px]">
-                      32 days
+                      {pairAge === 0 ? "N.A " : pairAge} Days
                     </span>
                   </div>
                 </div>
@@ -129,9 +148,9 @@ const Analysis = () => {
           <div className="flex max-w-[595px] w-full flex-wrap justify-center items-center gap-[30px]">
             {/* Chart */}
             <div className="relative flex justify-center items-center w-[223px]">
-              <PieChart percentage={75} />
+              <PieChart percentage={tokenScore} />
               <div className="absolute text-white text-[66px] flex justify-center items-center rounded-full bg-[#161616] h-[150px] w-[150px]">
-                75
+                {tokenScore === -1 ? "N.A" : tokenScore}
               </div>
             </div>
             {/* Check Boxes */}
@@ -167,12 +186,9 @@ const Analysis = () => {
                   />
                 </span>
               </div>
-              <a
-                href="/"
-                className="text-end mt-3 right-0 -bottom-8 absolute underline text-[#B9B9B7]"
-              >
+              <span className="text-end mt-3 right-0 -bottom-8 absolute underline text-[#B9B9B7]">
                 View more
-              </a>
+              </span>
             </div>
           </div>
         </div>
